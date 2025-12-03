@@ -3,7 +3,7 @@ import { storage, settings } from '../scripts/storage.js';
 
 class Switch extends HTMLElement {
     static get observedAttributes() {
-        return ["selected"];
+        return ["selected", "id"];
     }
 
     constructor() {
@@ -13,10 +13,10 @@ class Switch extends HTMLElement {
         this.shadowRoot.innerHTML = `
             <style>
                 .switch {
-                    background-color: var(--app-200);
+                    background-color: var(--app-modal-200);
                     border-radius: 16px;
 
-                    box-shadow: inset 0px 0px 0px 2px var(--app-400);
+                    box-shadow: inset 0px 0px 0px 2px var(--app-modal-400);
                     width: 52px;
                     height: 32px;
                     display: flex;
@@ -35,7 +35,7 @@ class Switch extends HTMLElement {
                     width: 16px;
                     height: 16px;
                     border-radius: 50%;
-                    background-color: var(--app-900);
+                    background-color: var(--app-modal-900);
                     margin-inline-start: 0;
                     margin-inline-end: calc(52px - 32px);
 
@@ -100,6 +100,8 @@ class Switch extends HTMLElement {
         const on = this.hasAttribute("selected");
         this.inputEl.checked = on;
         this.switchEl.classList.toggle("selected", on);
+
+        this.inputEl.id = this.id;
     }
 
     attributeChangedCallback(name, oldV, newV) {

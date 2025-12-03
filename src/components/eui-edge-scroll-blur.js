@@ -64,7 +64,7 @@ class EUIEdgeScrollBlur extends HTMLElement {
                 inset:0;
                 z-index:11;
                 transition: background 0.2s var(--transition-function);
-                background:linear-gradient(transparent 0%, var(--app-100, #000) 100%);
+                background: var(--edge-gradient, linear-gradient(transparent 0%, var(--app-100, #000) 100%));
                 opacity:.8
             }
 

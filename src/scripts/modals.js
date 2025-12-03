@@ -65,16 +65,6 @@ export function openModal(data) {
             modal.style.maxHeight = data.my + "px";
         }
 
-        // Custom
-
-        if (data.post) {
-            modal.classList.add("post-modal");
-        }
-
-        if (data.login) {
-            modal.classList.add("login-modal-colors");
-        }
-
         const optionsContainer = document.querySelector('.modal-options');
 
         optionsContainer.innerHTML = '';

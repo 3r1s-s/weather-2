@@ -5,6 +5,7 @@ import "./components/eui-button.js";
 import "./components/eui-input.js";
 import "./components/eui-icon.js";
 import "./components/eui-edge-scroll-blur.js";
+import "./components/eui-switch.js";
 
 import { WEATHER_CODES, formatHour, getWeekday, formatMoonPhase, formatWindDirection } from "./scripts/formatWeather.js";
 import { getWeather, searchPlaces, getMoonPhase, reverseGeocode } from "./scripts/weatherAPI.js";
@@ -12,6 +13,7 @@ import { drawMoon, angleMoon } from "./scripts/moon.js";
 
 import { openAlert, closeAlert } from "./scripts/modals.js"
 import { storage, settings } from "./scripts/storage.js";
+import { openSettings } from "./scripts/settings.js";
 
 const main = document.querySelector(".main");
 const contentOuter = document.querySelector(".content-outer");
@@ -27,6 +29,73 @@ sidebarToggle.addEventListener("click", () => {
     app.classList.toggle("collapsed");
     localStorage.setItem("sidebar-collapsed", app.classList.contains("collapsed"));
 });
+
+const settingsButton = document.querySelector(".settings");
+settingsButton.addEventListener("click", openSettings);
+
+window.addEventListener('settings-changed', () => {
+    if (currentDisplayedPlace) {
+        weatherPage(currentDisplayedPlace);
+    }
+    renderSidebar();
+});
+
+// Unit conversion helpers
+function formatTemp(celsius) {
+    const unit = settings.get('unit_temp') || 'c';
+    if (unit === 'f') {
+        return Math.round((celsius * 9 / 5) + 32);
+    }
+    return Math.round(celsius);
+}
+
+function formatSpeed(kmh) {
+    const unit = settings.get('unit_speed') || 'kmh';
+    if (unit === 'mph') return Math.round(kmh * 0.621371);
+    if (unit === 'knots') return Math.round(kmh * 0.539957);
+    return Math.round(kmh);
+}
+
+function getSpeedUnit() {
+    const unit = settings.get('unit_speed') || 'kmh';
+    if (unit === 'mph') return 'mph';
+    if (unit === 'knots') return 'knots';
+    return 'km/h';
+}
+
+function formatDistance(km) {
+    const unit = settings.get('unit_dist') || 'km';
+    if (unit === 'mi') return (km * 0.621371).toFixed(1);
+    return km.toFixed(1);
+}
+
+function getDistanceUnit() {
+    return settings.get('unit_dist') || 'km';
+}
+
+function formatPressure(hpa) {
+    const unit = settings.get('unit_press') || 'hpa';
+    if (unit === 'inhg') return (hpa * 0.02953).toFixed(2);
+    return Math.round(hpa);
+}
+
+function getPressureUnit() {
+    const unit = settings.get('unit_press') || 'hpa';
+    if (unit === 'inhg') return 'inHg';
+    return 'hPa';
+}
+
+function formatPrecipitation(mm) {
+    const unit = settings.get('unit_precip') || 'mm';
+    if (unit === 'in') return (mm * 0.0393701).toFixed(2);
+    return mm.toFixed(1);
+}
+
+function getPrecipitationUnit() {
+    const unit = settings.get('unit_precip') || 'mm';
+    if (unit === 'in') return 'in/h';
+    return 'mm/h';
+}
 
 contentOuter.addEventListener("scroll", () => {
     if (contentOuter.scrollTop > 30) {
@@ -173,9 +242,9 @@ async function renderSidebar() {
             const weather = data.current;
             const daily = data.daily;
 
-            const high = daily.max ? Math.round(daily.max[0]) : '--';
-            const low = daily.min ? Math.round(daily.min[0]) : '--';
-            const currentTemp = Math.round(weather.temp);
+            const high = daily.max ? formatTemp(daily.max[0]) : '--';
+            const low = daily.min ? formatTemp(daily.min[0]) : '--';
+            const currentTemp = formatTemp(weather.temp);
             const weatherType = WEATHER_CODES[weather.code] || "Unknown";
 
             const timeStr = new Date(weather.time).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
@@ -311,7 +380,7 @@ function weatherPage(nameOrObj) {
             <div class="forecast-day">
                 <div>${getWeekday(day)}</div>
                 <div>${WEATHER_CODES[daily.code[i]]}</div>
-                <div>${daily.max[i]}° / ${daily.min[i]}°</div>
+                <div>${formatTemp(daily.max[i])}° / ${formatTemp(daily.min[i])}°</div>
             </div>
         `).join("");
 
@@ -327,13 +396,13 @@ function weatherPage(nameOrObj) {
 
             return `
             <div class="forecast-hour">
-                <span class="forcast-temp">${Math.round(temp)}<span class="symbol">º</span></span>
+                <span class="forcast-temp">${formatTemp(temp)}<span class="symbol">º</span></span>
                 <span class="forecast-time">${formatHour(hour)}</span>
             </div>
         `}).join("");
 
         const currentTemp = weather.temp;
-        document.getElementById("temperature").textContent = `${Math.round(currentTemp)}`;
+        document.getElementById("temperature").textContent = `${formatTemp(currentTemp)}`;
 
         title.textContent = `${result.name}`;
         document.getElementById("placename-full").textContent = result.full;
@@ -343,21 +412,21 @@ function weatherPage(nameOrObj) {
         const weatherType = WEATHER_CODES[weather.code] || "Unknown";
         if (typeEl) typeEl.textContent = weatherType;
 
-        document.getElementById("pressure").innerHTML = `<span class="card-name">Pressure</span><span class="card-value">${Math.round(weather.pressure)}</span><span class="card-unit">hPa</span>`;
+        document.getElementById("pressure").innerHTML = `<span class="card-name">Pressure</span><span class="card-value">${formatPressure(weather.pressure)}</span><span class="card-unit">${getPressureUnit()}</span>`;
         document.getElementById("humidity").innerHTML = `<span class="card-name">Humidity</span><span class="card-value">${weather.humidity}%</span><span class="card-unit">Rh</span>`;
-        document.getElementById("wind").innerHTML = `<span class="card-name">Wind</span><span class="card-value">${Math.round(weather.wind_speed)} ${formatWindDirection(weather.wind_dir)}</span><span class="card-unit">km/h</span>`;
-        document.getElementById("visibility").innerHTML = `<span class="card-name">Visibility</span><span class="card-value">${(weather.visibility / 1000).toFixed(1)}</span><span class="card-unit">km</span>`;
-        document.getElementById("precipitation").innerHTML = `<span class="card-name">Precipitation</span><span class="card-value">${weather.precipitation.toFixed(1)}</span><span class="card-unit">mm/h</span>`;
-        document.getElementById("heat-index").innerHTML = `<span class="card-name">Feels like</span><span class="card-value">${Math.round(weather.feels_like)}<span class="symbol">º</span></span><span class="card-unit">C°</span>`;
-        document.getElementById("dewpoint").innerHTML = `<span class="card-name">Dewpoint</span><span class="card-value">${Math.round(weather.dewpoint)}<span class="symbol">º</span></span><span class="card-unit">C°</span>`;
+        document.getElementById("wind").innerHTML = `<span class="card-name">Wind</span><span class="card-value">${formatSpeed(weather.wind_speed)} ${formatWindDirection(weather.wind_dir)}</span><span class="card-unit">${getSpeedUnit()}</span>`;
+        document.getElementById("visibility").innerHTML = `<span class="card-name">Visibility</span><span class="card-value">${formatDistance(weather.visibility / 1000)}</span><span class="card-unit">${getDistanceUnit()}</span>`;
+        document.getElementById("precipitation").innerHTML = `<span class="card-name">Precipitation</span><span class="card-value">${formatPrecipitation(weather.precipitation)}</span><span class="card-unit">${getPrecipitationUnit()}</span>`;
+        document.getElementById("heat-index").innerHTML = `<span class="card-name">Feels like</span><span class="card-value">${formatTemp(weather.feels_like)}<span class="symbol">º</span></span><span class="card-unit">${settings.get('unit_temp') === 'f' ? 'F°' : 'C°'}</span>`;
+        document.getElementById("dewpoint").innerHTML = `<span class="card-name">Dewpoint</span><span class="card-value">${formatTemp(weather.dewpoint)}<span class="symbol">º</span></span><span class="card-unit">${settings.get('unit_temp') === 'f' ? 'F°' : 'C°'}</span>`;
 
         const sunriseTime = daily.sunrise[0];
         const sunsetTime = daily.sunset[0];
 
 
         if (daily.max) {
-            const high = Math.round(daily.max[0]);
-            const low = Math.round(daily.min[0]);
+            const high = formatTemp(daily.max[0]);
+            const low = formatTemp(daily.min[0]);
             document.getElementById("high-low").innerHTML = `<span>H: <span class="high">${high}°</span></span><span>L: <span class="low">${low}°</span></span>`;
         }
 

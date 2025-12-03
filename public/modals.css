@@ -159,6 +159,8 @@
 
 .modal-subheader {
     margin: 0;
+    font-weight: 600;
+    opacity: 0.7;
 }
 
 .modal::after {
@@ -441,4 +443,53 @@
         corner-shape: superellipse(1.5);
         border-radius: 50px;
     }
+}
+
+/* Settings */
+
+.unit-toggle {
+    display: flex;
+    flex-wrap: nowrap;
+    border: 2px solid var(--app-modal-600);
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.unit-toggle-button {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+
+    transition: background 0.2s cubic-bezier(.2, 0, 0, 1), color 0.2s cubic-bezier(.2, 0, 0, 1), font-weight 0.2s cubic-bezier(.2, 0, 0, 1);
+}
+
+.unit-toggle-button:not(:first-child):not(:last-child) {
+    border-left: 2px solid var(--app-modal-600);
+    border-right: 2px solid var(--app-modal-600);
+}
+
+.unit-toggle-button.enabled {
+    background-color: var(--app-modal-600);
+    color: var(--app-modal-text);
+    font-weight: 600;
+}
+
+.setting {
+    padding: 10px 10px 10px 15px;
+    font-weight: 600;
+    background: var(--app-modal-300);
+    border-radius: 15px;
+    margin: 10px 0;
+}
+
+.setting>label {
+    display: flex;
+    align-items: center;
+}
+
+.setting-label {
+    flex-grow: 1;
 }
