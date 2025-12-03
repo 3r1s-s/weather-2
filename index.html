@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="themes.css">
+    <link rel="stylesheet" href="https://eris.cafe/fonts.css">
+
+    <link rel="stylesheet" href="modals.css">
+</head>
+
+<body class="day">
+    <div id="app">
+        <div class="sidebar-header">
+            <eui-button icon type="transparent" id="sidebar-toggle">
+                <span class="plus">
+                    <eui-icon name="side-nav"></eui-icon>
+                </span>
+            </eui-button>
+        </div>
+        <div class="sidebar">
+            <div class="outer-sidebar">
+                <div class="search-input">
+                    <input type="text" id="search-input" autocomplete="off" placeholder="">
+                    <label for="search-input">Search</label>
+                    <eui-icon name="search" width="20" height="20"></eui-icon>
+                    <div class="search-results"></div>
+                </div>
+                <div class="places">
+                </div>
+            </div>
+        </div>
+        <div class="main">
+            <div class="add-place-outer">
+                <eui-button icon type="transparent" class="add-place">
+                    <span class="plus">
+                        <eui-icon name="add"></eui-icon>
+                    </span>
+                </eui-button>
+            </div>
+            <div class="titlebar hide">
+                <eui-edge-scroll-blur type="top"></eui-edge-scroll-blur>
+                <span class="title">Weather</span>
+            </div>
+            <div class="content-outer">
+                <div class="content">
+                    <div class="hero">
+                        <span class="place-title" id="place-title">Place</span>
+                        <span class="temp-title">
+                            <span class="degrees" id="temperature">16</span>
+                            <span class="symbol large">°</span>
+                        </span>
+                        <span class="plus" id="weather-flavor">Clear</span>
+                        <span class="plus" id="high-low">
+                            <span>H: <span class="high">12º</span></span>
+                            <span>L: <span class="low">3º</span></span>
+                        </span>
+                    </div>
+                    <div class="cards">
+                        <div class="card" id="forecast"></div>
+                        <div class="card" id="week"></div>
+                        <div class="card" id="humidity"></div>
+                        <div class="card" id="wind"></div>
+                        <div class="card" id="visibility"></div>
+                        <div class="card" id="precipitation"></div>
+                        <div class="card" id="heat-index"></div>
+                        <div class="card" id="dewpoint"></div>
+                        <div class="card" id="pressure"></div>
+                        <div class="card" id="sunrise"></div>
+                        <div class="card" id="sunset"></div>
+                        <div class="card" id="moon"></div>
+                    </div>
+                    <span id="placename-full" class="plus"></span>
+                </div>
+            </div>
+        </div>
+        <div class="background">
+            <div id="cloudy_div" class="cloudy_anim_1"></div>
+            <div id="cloudy_div" class="cloudy_anim_2"></div>
+            <div id="cloudy_div" class="cloudy_anim_3"></div>
+        </div>
+    </div>
+    <div class="tinted">
+        <div class="alert-outer">
+            <div class="alert">
+                <div class="alert-inner">
+
+                </div>
+                <div class="alert-options">
+                </div>
+            </div>
+        </div>
+        <div class="modal-outer">
+            <div class="modal">
+                <div class="modal-inner">
+
+                </div>
+                <div class="modal-options">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="module" src="/src/index.js"></script>
+
+</html>

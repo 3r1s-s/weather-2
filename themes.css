@@ -1,0 +1,60 @@
+.night {
+    --background: linear-gradient(#04081A, #2E3D5D);
+}
+
+.day {
+    --app-100: #1C5994;
+    --app-200: #2C6499;
+    --app-300: #5388BD;
+    --app-400: #4A91DA;
+
+    --background: linear-gradient(#1C5994, #6EA8E5);
+}
+
+.sunset {
+    --app-100: #506A9B;
+    --app-200: #536992;
+    --app-300: #7795CA;
+    --app-400: #84a4da;
+
+    --background: linear-gradient(#506A9B, #E1C3AB);
+}
+
+.sunrise {
+    --app-100: #1E345C;
+    --app-200: #56587E;
+    --app-300: #6D7194;
+    --app-400: #9599bb;
+
+
+    --background: linear-gradient(#203B6B 0%, #72709A 50%, #C07A83 100%);
+}
+
+.dusk,
+.dawn {
+    --app-100: #1E345C;
+    --app-200: #484D70;
+    --app-300: #6D7194;
+    --app-400: #9599bb;
+
+
+    --background: linear-gradient(#1E345C 0%, #37456E 50%, #A36F82 100%);
+}
+
+.day.rain {
+    --app-100: #455365;
+    --app-200: #627185;
+    --app-300: #778599;
+    --app-400: #8f9fba;
+
+    --background: linear-gradient(#455365, #627185);
+}
+
+.night.rain {
+    --app-100: #0e1216;
+    --app-200: #1b222b;
+    --app-300: #262d3d;
+    --app-400: #374157;
+
+    --background: linear-gradient(#1b222b, #0e1216);
+}
