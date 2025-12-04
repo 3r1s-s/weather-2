@@ -43,11 +43,11 @@ export function openSettings() {
                 <div class="unit-toggle-button ${currentUnits.precip === 'mm' ? 'enabled' : ''}" data-type="unit_precip" data-value="mm">mm</div>
                 <div class="unit-toggle-button ${currentUnits.precip === 'in' ? 'enabled' : ''}" data-type="unit_precip" data-value="in">in</div>
             </div>
-
+            <hr>
             <div class="setting">
                 <label for="fancy-animation">
                     <span class="setting-label">Fancy Animation</span>
-                    <eui-switch id="fancy-animation" ${settings.get('fancy_animation') ? 'checked' : ''}></eui-switch>
+                    <eui-switch id="fancy-animation" ${settings.get('fancy_animation') !== false ? 'selected' : ''}></eui-switch>
                 </label>
             </div>
 
@@ -71,5 +71,16 @@ export function openSettings() {
                 window.dispatchEvent(new CustomEvent('settings-changed'));
             });
         });
+
+        const fancyAnimation = document.getElementById('fancy-animation');
+        if (fancyAnimation) {
+            fancyAnimation.addEventListener('click', () => {
+                setTimeout(() => {
+                    const isChecked = fancyAnimation.hasAttribute('selected');
+                    settings.set('fancy_animation', isChecked);
+                    window.dispatchEvent(new CustomEvent('settings-changed'));
+                }, 0);
+            });
+        }
     }, 50);
 }

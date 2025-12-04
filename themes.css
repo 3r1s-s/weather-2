@@ -53,8 +53,26 @@
 .night.rain {
     --app-100: #0e1216;
     --app-200: #1b222b;
-    --app-300: #262d3d;
+    --app-300: #3a3e48;
     --app-400: #374157;
 
     --background: linear-gradient(#1b222b, #0e1216);
+}
+
+.day.snow {
+    --app-100: #3C475B;
+    --app-200: #41516A;
+    --app-300: #5D6980;
+    --app-400: #68768E;
+
+    --background: linear-gradient(#42526B, #56647C);
+}
+
+.night.snow {
+    --app-100: #1C202A;
+    --app-200: #202635;
+    --app-300: #273041;
+    --app-400: #262F3B;
+
+    --background: linear-gradient(#202635, #1A2231);
 }

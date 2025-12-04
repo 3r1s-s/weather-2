@@ -25,7 +25,7 @@
 }
 
 .tinted {
-    --tint-amount: 25%;
+    --tint-amount: 45%;
 
     --app-modal-100: color-mix(in srgb, var(--app-200) var(--tint-amount), #242424 100%);
     --app-modal-200: color-mix(in srgb, var(--app-200) var(--tint-amount), #323232 100%);
@@ -191,7 +191,11 @@
 }
 
 .modal hr {
-    border-color: var(--app-modal-400)
+    background: var(--app-modal-400);
+    height: 2px;
+    border-radius: 100px;
+    width: calc(100% - 25px);
+    border: none;
 }
 
 @media only screen and (min-width: 600px) {

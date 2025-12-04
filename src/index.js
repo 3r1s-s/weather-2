@@ -38,9 +38,16 @@ window.addEventListener('settings-changed', () => {
         weatherPage(currentDisplayedPlace);
     }
     renderSidebar();
+    updateCloudyDivs();
 });
 
-// Unit conversion helpers
+function updateCloudyDivs() {
+    const enabled = settings.get('fancy_animation');
+    document.querySelector('.background').classList.toggle('no-animation', !enabled);
+}
+
+updateCloudyDivs();
+
 function formatTemp(celsius) {
     const unit = settings.get('unit_temp') || 'c';
     if (unit === 'f') {
@@ -455,12 +462,12 @@ function weatherPage(nameOrObj) {
         drawMoon(moon);
         angleMoon(moon, result.lat);
         setBackground(weather.code, weather.time, daily.sunrise[0], daily.sunset[0]);
+        g.scrollTo(0, 0);
         g.classList.remove("out");
         setTimeout(() => {
             t.classList.remove("transition");
         }, 50);
 
-        // Update sidebar active state
         updateActiveSidebarItem();
     })
 }
@@ -512,7 +519,7 @@ function setBackground(code, currentTime, sunriseTime, sunsetTime) {
     }
 
     // 45 - 67
-    if (code >= 45 && code <= 67) {
+    if (code >= 45 && code <= 67 || code >= 80 && code <= 82) {
         document.body.classList.add("rain");
     }
 
