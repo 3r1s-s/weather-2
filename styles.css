@@ -484,6 +484,21 @@ a:hover {
     -webkit-backdrop-filter: blur(15px);
     border-radius: 15px;
     overflow: scroll;
+
+    scrollbar-width: none;
+}
+
+.card::-webkit-scrollbar {
+    display: none;
+}
+
+.card::-webkit-scrollbar-track {
+    display: none;
+}
+
+.no-animation .card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
 #forecast.card {
@@ -519,12 +534,24 @@ a:hover {
 }
 
 .forecast-day {
-    display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
     padding: 0.5rem;
     font-weight: 500;
     justify-content: space-between;
+}
+
+.forecast-day-temp {
+    text-align: right;
+}
+
+.forecast-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
 }
 
 #forecast.card::-webkit-scrollbar,

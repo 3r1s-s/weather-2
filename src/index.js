@@ -43,7 +43,7 @@ window.addEventListener('settings-changed', () => {
 
 function updateCloudyDivs() {
     const enabled = settings.get('fancy_animation');
-    document.querySelector('.background').classList.toggle('no-animation', !enabled);
+    app.classList.toggle('no-animation', !enabled);
 }
 
 updateCloudyDivs();
@@ -374,6 +374,24 @@ function weatherPage(nameOrObj) {
         updateActiveSidebarItem();
     }
 
+    function weatherIcon(code) {
+        if (code >= 0 && code <= 1) { // Clear sky
+            return 'weather_clear';
+        } else if (code === 2) { // Partly cloudy
+            return 'weather_partly_cloudy';
+        } else if (code >= 3 && code <= 48) { // Overcast, fog, deposition
+            return 'weather_cloudy';
+        } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) { // Drizzle, rain showers
+            return 'weather_rainy';
+        } else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) { // Snow fall
+            return 'weather_snowy';
+        } else if (code === 95 || code === 96 || code === 99) { // Thunderstorm
+            return 'weather_thunderstorm';
+        }
+        // Default case for any unhandled codes
+        return 'weather_clear';
+    }
+
     getWeather(nameOrObj).then(data => {
         const result = data.results[0];
         currentDisplayedPlace = result;
@@ -385,9 +403,11 @@ function weatherPage(nameOrObj) {
         const wk = document.getElementById("week");
         wk.innerHTML = daily.time.map((day, i) => `
             <div class="forecast-day">
-                <div>${getWeekday(day)}</div>
-                <div>${WEATHER_CODES[daily.code[i]]}</div>
-                <div>${formatTemp(daily.max[i])}° / ${formatTemp(daily.min[i])}°</div>
+                <div class="forecast-day-name">${getWeekday(day)}</div>
+                <div class="forecast-icon">
+                    <eui-icon name="${weatherIcon(daily.code[i])}"></eui-icon>
+                </div>
+                <div class="forecast-day-temp">${formatTemp(daily.max[i])}° / ${formatTemp(daily.min[i])}°</div>
             </div>
         `).join("");
 
