@@ -56,6 +56,7 @@
 
 * {
     transition: background 0.2s var(--transition-function), color 0.2s var(--transition-function);
+    scrollbar-width: none;
 }
 
 body {
@@ -351,6 +352,8 @@ a:hover {
     overflow: scroll;
     border-radius: 8px;
 
+    animation: fade-in 0.3s var(--transition-function);
+
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
 
@@ -560,18 +563,17 @@ a:hover {
 }
 
 .forecast-hour {
-    padding: 5px;
+    padding: 0px 6px;
     min-width: 80px;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    justify-content: space-around;
+    height: 100%;
 }
 
-.forcast-temp {
-    font-size: 2em;
+.forecast-temp {
+    font-size: 1.25em;
     font-weight: 700;
 }
 
@@ -582,8 +584,6 @@ a:hover {
 #placename-full {
     font-size: 1.15rem;
     font-weight: 700;
-    padding-top: 2rem;
-    padding-bottom: 1rem;
     margin: 0;
 }
 
@@ -709,6 +709,7 @@ a:hover {
 
 .no-animation #cloudy_div {
     animation: none;
+    display: none;
 }
 
 /* Search Results */
@@ -757,6 +758,28 @@ a:hover {
     mix-blend-mode: plus-lighter;
 }
 
+/* Footer */
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.35rem;
+
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+    font-weight: 500;
+}
+
+.footer a {
+    color: var(--app-text);
+}
+
+#provided {
+    opacity: 0.8;
+}
+
 /* Collapsed Sidebar */
 
 .sidebar {
@@ -793,4 +816,38 @@ a:hover {
         z-index: 3;
         height: 100%;
     }
+}
+
+/* Animations */
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        filter: blur(4px);
+    }
+
+    to {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1;
+        filter: blur(0);
+    }
+
+    to {
+        opacity: 0;
+        filter: blur(4px);
+        height: 0;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.place-outer.fading-out {
+    animation: fade-out 0.3s var(--transition-function) forwards;
+    pointer-events: none;
 }

@@ -41,7 +41,9 @@ export function formatHour(ts) {
 
 export function getWeekday(ts) {
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const d = new Date(ts);
+    // Split YYYY-MM-DD to use local time constructor, avoiding UTC midnight shift
+    const parts = ts.split('-');
+    const d = new Date(parts[0], parts[1] - 1, parts[2]);
     return days[d.getDay()];
 }
 

@@ -358,6 +358,43 @@ function removePlace(index) {
 
 document.querySelector(".add-place").addEventListener("click", addPlace);
 
+function weatherIcon(code, timeStr, sunriseStr, sunsetStr) {
+    let baseIcon;
+    if (code >= 0 && code <= 1) {
+        baseIcon = 'weather_clear';
+    } else if (code === 2) {
+        baseIcon = 'weather_partly_cloudy';
+    } else if (code >= 3 && code <= 48) {
+        baseIcon = 'weather_cloudy';
+    } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+        baseIcon = 'weather_rainy';
+    } else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) {
+        baseIcon = 'weather_snowy';
+    } else if (code === 95 || code === 96 || code === 99) {
+        baseIcon = 'weather_stormy';
+    } else {
+        baseIcon = 'weather_clear';
+    }
+
+    if (timeStr && sunriseStr && sunsetStr) {
+        const currentTime = new Date(timeStr);
+        const sunriseTime = new Date(sunriseStr);
+        const sunsetTime = new Date(sunsetStr);
+
+        const referenceParams = [2000, 0, 1];
+        currentTime.setFullYear(...referenceParams);
+        sunriseTime.setFullYear(...referenceParams);
+        sunsetTime.setFullYear(...referenceParams);
+
+        if ((currentTime < sunriseTime || currentTime > sunsetTime) && (baseIcon === 'weather_clear' || baseIcon === 'weather_partly_cloudy')) {
+            return baseIcon + '_night';
+        }
+    }
+    return baseIcon;
+}
+
+document.querySelector(".add-place").addEventListener("click", addPlace);
+
 function weatherPage(nameOrObj) {
     const g = document.querySelector(".content-outer");
     const t = document.querySelector(".titlebar");
@@ -374,24 +411,6 @@ function weatherPage(nameOrObj) {
         updateActiveSidebarItem();
     }
 
-    function weatherIcon(code) {
-        if (code >= 0 && code <= 1) { // Clear sky
-            return 'weather_clear';
-        } else if (code === 2) { // Partly cloudy
-            return 'weather_partly_cloudy';
-        } else if (code >= 3 && code <= 48) { // Overcast, fog, deposition
-            return 'weather_cloudy';
-        } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) { // Drizzle, rain showers
-            return 'weather_rainy';
-        } else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) { // Snow fall
-            return 'weather_snowy';
-        } else if (code === 95 || code === 96 || code === 99) { // Thunderstorm
-            return 'weather_thunderstorm';
-        }
-        // Default case for any unhandled codes
-        return 'weather_clear';
-    }
-
     getWeather(nameOrObj).then(data => {
         const result = data.results[0];
         currentDisplayedPlace = result;
@@ -400,12 +419,15 @@ function weatherPage(nameOrObj) {
         const daily = data.daily;
         const hourly = data.hourly;
 
+        const sunriseTimeStr = daily.sunrise[0];
+        const sunsetTimeStr = daily.sunset[0];
+
         const wk = document.getElementById("week");
         wk.innerHTML = daily.time.map((day, i) => `
             <div class="forecast-day">
                 <div class="forecast-day-name">${getWeekday(day)}</div>
                 <div class="forecast-icon">
-                    <eui-icon name="${weatherIcon(daily.code[i])}"></eui-icon>
+                    <eui-icon name="${weatherIcon(daily.code[i], null, null, null)}"></eui-icon>
                 </div>
                 <div class="forecast-day-temp">${formatTemp(daily.max[i])}° / ${formatTemp(daily.min[i])}°</div>
             </div>
@@ -420,11 +442,15 @@ function weatherPage(nameOrObj) {
         const forecast = document.getElementById("forecast");
         forecast.innerHTML = forecastHours.map((hour, i) => {
             const temp = hourly.temp[safeIndex + i];
+            console.log(hourly.time[safeIndex + i]);
 
             return `
             <div class="forecast-hour">
-                <span class="forcast-temp">${formatTemp(temp)}<span class="symbol">º</span></span>
                 <span class="forecast-time">${formatHour(hour)}</span>
+                <div class="forecast-icon">
+                <eui-icon name="${weatherIcon(hourly.code[safeIndex + i], hour, sunriseTimeStr, sunsetTimeStr)}" data-hour="${hour}"></eui-icon>
+                </div>
+                <span class="forecast-temp">${formatTemp(temp)}<span>º</span></span>
             </div>
         `}).join("");
 
@@ -447,18 +473,14 @@ function weatherPage(nameOrObj) {
         document.getElementById("heat-index").innerHTML = `<span class="card-name">Feels like</span><span class="card-value">${formatTemp(weather.feels_like)}<span class="symbol">º</span></span><span class="card-unit">${settings.get('unit_temp') === 'f' ? 'F°' : 'C°'}</span>`;
         document.getElementById("dewpoint").innerHTML = `<span class="card-name">Dewpoint</span><span class="card-value">${formatTemp(weather.dewpoint)}<span class="symbol">º</span></span><span class="card-unit">${settings.get('unit_temp') === 'f' ? 'F°' : 'C°'}</span>`;
 
-        const sunriseTime = daily.sunrise[0];
-        const sunsetTime = daily.sunset[0];
-
+        document.getElementById("sunrise").innerHTML = `<span class="card-name">Sunrise</span><span class="card-value">${formatHour(sunriseTimeStr)}</span>`;
+        document.getElementById("sunset").innerHTML = `<span class="card-name">Sunset</span><span class="card-value">${formatHour(sunsetTimeStr)}</span>`;
 
         if (daily.max) {
             const high = formatTemp(daily.max[0]);
             const low = formatTemp(daily.min[0]);
             document.getElementById("high-low").innerHTML = `<span>H: <span class="high">${high}°</span></span><span>L: <span class="low">${low}°</span></span>`;
         }
-
-        document.getElementById("sunrise").innerHTML = `<span class="card-name">Sunrise</span><span class="card-value">${formatHour(sunriseTime)}</span>`;
-        document.getElementById("sunset").innerHTML = `<span class="card-name">Sunset</span><span class="card-value">${formatHour(sunsetTime)}</span>`;
 
         let moon = getMoonPhase(new Date());
 
@@ -481,7 +503,7 @@ function weatherPage(nameOrObj) {
 
         drawMoon(moon);
         angleMoon(moon, result.lat);
-        setBackground(weather.code, weather.time, daily.sunrise[0], daily.sunset[0]);
+        setBackground(weather.code, weather.time, sunriseTimeStr, sunsetTimeStr);
         g.scrollTo(0, 0);
         g.classList.remove("out");
         setTimeout(() => {
