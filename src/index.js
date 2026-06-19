@@ -213,8 +213,6 @@ let renderId = 0;
 async function renderSidebar() {
     const currentId = ++renderId;
     const placesContainer = document.querySelector(".places");
-    // Don't clear immediately to avoid flickering/empty state during fetch
-    // placesContainer.innerHTML = ""; 
 
     const placesToRender = [];
 
@@ -225,7 +223,6 @@ async function renderSidebar() {
     placesToRender.push(...savedPlaces);
 
     try {
-        // Fetch all weather data in parallel
         const weatherPromises = placesToRender.map(place =>
             getWeather({ latitude: place.lat, longitude: place.lon, name: place.name })
                 .then(data => ({ place, data }))
@@ -237,14 +234,13 @@ async function renderSidebar() {
 
         const results = await Promise.all(weatherPromises);
 
-        // Check if a new render has started since we began
         if (currentId !== renderId) return;
 
         placesContainer.innerHTML = "";
         const fragment = document.createDocumentFragment();
 
         results.forEach((result, index) => {
-            if (!result) return; // Skip failed fetches
+            if (!result) return;
             const { place, data } = result;
             const weather = data.current;
             const daily = data.daily;
@@ -635,7 +631,6 @@ function askForLocation() {
     });
 }
 
-// Initial load
 if (savedCurrentLocation) {
     weatherPage(savedCurrentLocation);
 } else {

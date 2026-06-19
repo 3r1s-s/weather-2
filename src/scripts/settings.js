@@ -47,7 +47,7 @@ export function openSettings() {
             <div class="setting">
                 <label for="fancy-animation">
                     <span class="setting-label">Fancy Animation</span>
-                    <eui-switch id="fancy-animation" ${settings.get('fancy_animation') !== false ? 'selected' : ''}></eui-switch>
+                    <eui-switch id="fancy-animation" ${settings.get('fancy_animation') ? 'selected' : ''}></eui-switch>
                 </label>
             </div>
 
