@@ -70,7 +70,7 @@ body {
     user-select: none;
     -webkit-user-select: none;
 
-    font-family: 'GG Sans', sans-serif;
+    font-family: 'Google Sans Flex', sans-serif;
 }
 
 a {
@@ -260,7 +260,7 @@ a:hover {
     caret-color: var(--brand-purple);
     color: var(--app-text);
     height: 100%;
-    flex-grow: 1;
+    width: 100%;
     font-family: inherit;
 }
 
@@ -272,6 +272,7 @@ a:hover {
     padding-right: 10px;
     color: rgba(245, 245, 245, .6);
     mix-blend-mode: plus-lighter;
+    flex-shrink: 0;
 }
 
 .search-input label {
@@ -383,7 +384,7 @@ a:hover {
 }
 
 .place .place-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--app-text);
     z-index: 1;
@@ -450,12 +451,12 @@ a:hover {
 
 #weather-flavor {
     font-size: 2em;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 #high-low {
     font-size: 1.25em;
-    font-weight: 700;
+    font-weight: 500;
     display: flex;
     gap: 8px;
 }
